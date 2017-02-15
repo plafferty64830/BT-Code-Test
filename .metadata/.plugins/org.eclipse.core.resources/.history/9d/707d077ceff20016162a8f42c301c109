@@ -1,0 +1,175 @@
+/***
+ * Patrick Lafferty
+ */
+
+/***
+ * This is a Router Patch checking system which addresses the following tasks:
+ * 
+ * 1. Reading a csv file
+ * 2. Output entire contents of csv file to the screen
+ * 3. Using for loops apply the following filters:
+ * 		a. The router has not already been patched
+ * 		b. The current version of the OS is 12 or above
+ *		c. There are no other routers which share the same IP address
+ *		d. There are no other routers which share the same hostname
+ *
+ *4. Output all routers that satisfy the conditions
+ *5. System exit
+ *
+ * 
+ * 
+ */
+
+package codeTest;
+
+import java.io.BufferedReader; 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.stream.Stream;
+import java.util.*;
+
+
+public class Main {
+
+	public static void main(String[] args) throws IOException {
+
+		//Allow for user input
+		Scanner sc = new Scanner(System.in);
+
+		
+		String filename = "";
+		System.out.println("Please enter the full name of the Comma Seperated \nValue file that you wish to examine?");
+		//Allow user to enter csv file name
+		//This would allow an alternative csv file to be analysed
+		filename = sc.next();
+
+		//Retrieve all csv lines
+		try (Stream<String> stream = Files.lines(Paths.get(filename))) {
+
+			//Label the router output
+			System.out.println("All routers: \n");
+			//Printout all routers to confirm input
+			stream.forEach(System.out::println);
+		}
+
+		try {
+
+			File inputFile = new File("sample.csv");
+			
+			
+			BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+
+			String strLine;
+
+			ArrayList<String> lines = new ArrayList<String>();
+
+			//Add each line to an ArrayList called lines
+			while ((strLine = reader.readLine()) != null) {
+
+				lines.add(strLine);
+
+			}
+
+			ArrayList<String> hostname = new ArrayList<String>();
+			ArrayList<String> IP = new ArrayList<String>();
+			String[] array = null;
+
+			//This for loop is used to split up each line in the csv file
+			for (int i = 1; i < lines.size(); i++) {
+				//Set up a String variable tempVal to hold the current line
+				String tempVal;
+				tempVal = lines.get(i);
+				//Split tempVal and add it to an array of Strings
+				array = tempVal.split(",");
+				//Add all the retrieved hostnames into an ArrayList called hostname
+				//Convert all hostnames toLowerCase to allow the system to treat "C.EXAMPLE.COM" and "c.example.com" in the same way 
+				hostname.add(array[0].toLowerCase());
+				//Add all the retrieved hostnames to an ArrayList called IP
+				IP.add(array[1]);
+				
+			}
+			
+			//This for loop is set up to ensure there are no duplicate hostnames
+			for(int i=0; i<hostname.size(); i++){
+				String temp = hostname.get(i);
+				for(int j=0; j<hostname.size();j++){
+					String temp2 = hostname.get(j);
+					if(!(i == j)){
+						if(temp.equals(temp2)){
+							//............
+							hostname.remove(i);
+							hostname.remove(j);
+							lines.remove(i+1);
+							lines.remove(j+1);
+						}
+					}
+				}
+			}
+			int count = 0;
+			ArrayList<String> temp = new ArrayList<String>();
+			ArrayList<String> temp2 = new ArrayList<String>();
+			for(String x : IP){
+				int count2 = 0;
+				
+				
+				//This for iteration is set up to ensure there are no duplicate IP addresses
+				for(String j : IP){
+					
+					if(count != count2){
+						if(x.equals(j)){
+							temp.add(j);
+							temp2.add(x);
+					
+						}
+					}
+					count2++;
+				}
+				count++;
+			}
+			
+			
+			for(String x : temp){
+				IP.remove(x);
+			}
+			
+			for(String x : temp2){
+				IP.remove(x);
+			}
+			
+			
+			//Ensure there are no routers that have already been patched
+			for(int i=0; i<lines.size();i++){
+				if(lines.get(i).contains("yes")){
+					lines.remove(i);
+					
+				}
+			}
+
+			//Ensure that the current version of the router is greater that 12
+			for(int i=1; i<lines.size();i++){
+				
+				double versionNumber = Double.parseDouble(array[3]);
+				if(versionNumber < 12){
+					lines.remove(i);
+				}
+				
+			}
+			
+				
+				
+				
+				for(String x : lines){
+					System.out.println(x);
+				}
+				
+				
+			
+		} catch (Exception e) {
+			System.err.println("Error: " + e.getMessage());
+		}
+	}
+}
+

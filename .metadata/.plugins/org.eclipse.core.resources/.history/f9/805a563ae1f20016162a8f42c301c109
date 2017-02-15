@@ -1,0 +1,150 @@
+package codeTest;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.*;
+import java.util.ArrayList;
+
+public class Main {
+
+	public static void main(String[] args) throws IOException {
+
+		Scanner sc = new Scanner(System.in);
+
+		String filename = "";
+
+		System.out.println("Please enter the full name of the Comma Seperated \nValue file that you wish to examine?");
+		filename = sc.next();
+
+		
+		try (Stream<String> stream = Files.lines(Paths.get(filename))) {
+
+			System.out.println("All routers: \n");
+			stream.forEach(System.out::println);
+
+		}
+
+		try {
+
+			File inputFile = new File("sample.csv");
+			File outputFile = new File("Output.txt");
+
+			BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+
+			String strLine;
+
+			ArrayList<String> lines = new ArrayList<String>();
+
+			while ((strLine = reader.readLine()) != null) {
+
+				lines.add(strLine.toLowerCase());
+
+			}
+
+			ArrayList<String> hostname = new ArrayList<String>();
+			ArrayList<String> IP = new ArrayList<String>();
+			// ArrayList<Integer> Version = new ArrayList<Integer>();
+			String[] array;
+
+			for (int i = 1; i < lines.size(); i++) {
+				String tempVal;
+				tempVal = lines.get(i);
+				array = tempVal.split(",");
+				hostname.add(array[0].toLowerCase());
+				IP.add(array[1]);
+				// Version.add(Integer.parseInt(array[3]));
+
+			}
+
+			ArrayList<String> hostnameUpdate = new ArrayList<String>();
+			ArrayList<String> IPUpdate = new ArrayList<String>();
+
+			hostname.stream().distinct().forEach(hostnameUpdate::add);
+			IP.stream().distinct().forEach(IPUpdate::add);
+
+			System.out.println("\nHostname New" + hostnameUpdate);
+			System.out.println("\nIP New" + IPUpdate);
+
+			String temp = null;
+			String temp2 = null;
+
+			 for (int j = 0; j < 6; j++) {
+
+				temp = hostnameUpdate.get(j);
+				temp2 = IPUpdate.get(j);
+				
+
+					if (lines.get(j+1).contains(temp) && lines.get(j+1).contains(temp2) ) {
+						System.out.println("True - it works " + temp + j);
+
+					} else {
+							//need something in here to increase j by 1 only with lines.get(...) command
+							
+							lines.remove(j+1);
+							hostname.remove(j);
+							IPUpdate.remove(j);
+						}
+
+					}
+
+			/*
+			 
+			 String temps = null;
+			 
+			 System.out.println("Size is "+IPUpdate.size()+"Size is "+lines.size());
+			 ArrayList<String> temp3 = new ArrayList<String>();
+			 for (int j = 0; j < IPUpdate.size(); j++) {
+
+					temps = IPUpdate.get(j);
+
+						if (lines.get(j+1).contains(temps)) {
+							System.out.println("True - it works " + temps + j);
+							
+							lines.remove(j+1);
+							temp3.add(temps);
+							hostname.remove(j);
+
+						} else {
+								//need something in here to increase j by 1 only with lines.get(...) command
+								System.out.println("error!!!!!!");
+								
+							}
+
+						}
+			 
+
+			 System.out.println(lines);
+			 
+			 for(String x : temp3){
+				 lines.remove(x);
+			 }
+			 
+			 */
+			
+
+			//List<String> patched = Files.lines(Paths.get(filename)).filter(x -> !x.contains("yes"))
+				//	.filter(x -> !x.contains("11")).collect(Collectors.toList());
+
+			
+			//Files.write(Paths.get("Output.txt"), patched,lines);
+			Files.write(Paths.get("Output.txt"), lines);
+
+			String OutputFile = "Output.txt";
+
+			try (Stream<String> stream = Files.lines(Paths.get(OutputFile))) {
+
+				System.out.println("\nRouter(s) that can be patched: \n");
+				stream.forEach(System.out::println);
+			}
+
+		} catch (Exception e) {
+			System.err.println("Error: " + e.getMessage());
+		}
+	}
+}
