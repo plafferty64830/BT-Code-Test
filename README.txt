@@ -1,6 +1,6 @@
 Owner: Patrick Lafferty
 
-Router Patch Checking System Version 1.0 15/02/2017
+Router Patch Checking System Version 1.0 16/02/2017
 
 DEVELOPERS CONTACT DETAILS
 --------------------------
@@ -51,8 +51,8 @@ INSTRUCTIONS FOR RUNNING THE SYSTEM VIA THE WINDOWS COMMAND PROMPT (Windows 10)
 11. Check that the Main.class exists using dir
 12. Finally run the program by typing "java Main"
 
-INSTRUCTIONS FOR RETRIEVING DESIRED OUTPUT AFTER THE RUNS
----------------------------------------------------------
+INSTRUCTIONS FOR RETRIEVING DESIRED OUTPUT AFTER THE PROGRAM RUNS
+-----------------------------------------------------------------
 
 1. To indicate the program running the system will display the following question:
 	Please enter the full name of the Comma Seperated
